@@ -27,9 +27,9 @@ export const shareAction = async (
       file: buffer,
       fileName: file.name,
       folder: "/posts",
-      transformation: {
+      ...(file.type.includes("image") && {transformation: {
         pre: transformation,
-      },
+      }}),
       customMetadata:{
         sensitive: settings.sensitive,
       },

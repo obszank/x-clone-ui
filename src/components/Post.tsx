@@ -2,6 +2,7 @@ import { imagekit } from "@/utils";
 import Image from "./Image";
 import PostInfo from "./PostInfo";
 import PostInteractions from "./PostInteractions";
+import Video from "./Video";
 
 interface FileDetailsResponse {
   width: number;
@@ -9,23 +10,26 @@ interface FileDetailsResponse {
   filePath: string;
   url: string;
   fileType: string;
-  customMetaData?: {sensitive: boolean};
+  customMetadata?: { sensitive: boolean };
 }
 
 const Post = async () => {
-
-  const getFileDetails = async (fileId:string):Promise<FileDetailsResponse>=>{
-    return new Promise((resolve, reject)=>{
-      imagekit.getFileDetails(fileId, function(error, result) {
+  const getFileDetails = async (
+    fileId: string
+  ): Promise<FileDetailsResponse> => {
+    return new Promise((resolve, reject) => {
+      imagekit.getFileDetails(fileId, function (error, result) {
         if (error) reject(error);
         else resolve(result as FileDetailsResponse);
-      })
+      });
     });
-  }
+  };
 
-  const fileDetails = await getFileDetails("679dd192432c476416124bd7");
+  const fileId = "67a75a26432c476416dcc84e";
+  const fileDetails = await getFileDetails(fileId);
+  console.log(`fileId=${fileId}, fileDetails: }`, fileDetails);
 
-  console.log(fileDetails)
+  console.log(fileDetails);
 
   return (
     <div className="p-4 border-y-[1px] border-borderGray">
@@ -37,7 +41,10 @@ const Post = async () => {
           height="18"
           viewBox="0 0 24 24"
         >
-          <path fill="#71767b" d="M4.75 3.79l4.603 4.3-1.706 1.82L6 8.38v7.37c0 .97.784 1.75 1.75 1.75H13V20H7.75c-2.347 0-4.25-1.9-4.25-4.25V8.38L1.853 9.91.147 8.09l4.603-4.3zm11.5 2.71H11V4h5.25c2.347 0 4.25 1.9 4.25 4.25v7.37l1.647-1.53 1.706 1.82-4.603 4.3-4.603-4.3 1.706-1.82L18 15.62V8.25c0-.97-.784-1.75-1.75-1.75z" />
+          <path
+            fill="#71767b"
+            d="M4.75 3.79l4.603 4.3-1.706 1.82L6 8.38v7.37c0 .97.784 1.75 1.75 1.75H13V20H7.75c-2.347 0-4.25-1.9-4.25-4.25V8.38L1.853 9.91.147 8.09l4.603-4.3zm11.5 2.71H11V4h5.25c2.347 0 4.25 1.9 4.25 4.25v7.37l1.647-1.53 1.706 1.82-4.603 4.3-4.603-4.3 1.706-1.82L18 15.62V8.25c0-.97-.784-1.75-1.75-1.75z"
+          />
         </svg>
         <span>Waffel 99 reposted</span>
       </div>
@@ -64,7 +71,20 @@ const Post = async () => {
             got deleted aint no way bro aint no way that L is LLLL
           </p>
           {/* <Image path="general/post.jpeg" alt="" w={600} h={600} /> */}
-          {fileDetails && <Image path={fileDetails.filePath} alt="" w={fileDetails.width} h={fileDetails.height} className={fileDetails.customMetaData?.sensitive ? "blur-lg" : ""}/>}
+          {fileDetails && fileDetails.fileType === "image" ? (
+            <Image
+              path={fileDetails.filePath}
+              alt=""
+              w={fileDetails.width}
+              h={fileDetails.height}
+              className={fileDetails.customMetadata?.sensitive ? "blur-lg" : ""}
+            />
+          ) : (
+            <Video
+              path={fileDetails.filePath}
+              className={fileDetails.customMetadata?.sensitive ? "blur-lg" : ""}
+            />
+          )}
           <PostInteractions />
         </div>
       </div>
